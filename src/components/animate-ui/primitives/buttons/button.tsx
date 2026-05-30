@@ -1,16 +1,17 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { motion, type HTMLMotionProps } from 'motion/react';
+import { motion } from 'motion/react'
+import type { HTMLMotionProps } from 'motion/react'
 
-import { Slot, type WithAsChild } from '#/components/animate-ui/primitives/animate/slot.tsx';
+import { Slot } from '#/components/animate-ui/primitives/animate/slot.tsx'
+import type { WithAsChild } from '#/components/animate-ui/primitives/animate/slot.tsx'
 
 type ButtonProps = WithAsChild<
   HTMLMotionProps<'button'> & {
-    hoverScale?: number;
-    tapScale?: number;
+    hoverScale?: number
+    tapScale?: number
   }
->;
+>
 
 function Button({
   hoverScale = 1.05,
@@ -18,7 +19,7 @@ function Button({
   asChild = false,
   ...props
 }: ButtonProps) {
-  const Component = asChild ? Slot : motion.button;
+  const Component = asChild ? Slot : motion.button
 
   return (
     <Component
@@ -26,7 +27,7 @@ function Button({
       whileHover={{ scale: hoverScale }}
       {...props}
     />
-  );
+  )
 }
 
-export { Button, type ButtonProps };
+export { Button, type ButtonProps }

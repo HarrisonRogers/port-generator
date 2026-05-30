@@ -14,3 +14,8 @@ skills, projects, and career timeline.
 
 - Component file and folder names should use camelCase.
 - Keep exported React component identifiers in PascalCase.
+
+## Testing
+
+- Do not start or create localhost servers. The user will run and test the app
+  themselves.
