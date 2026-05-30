@@ -15,7 +15,7 @@ function App() {
   const [github, setGithub] = React.useState('')
   const [about, setAbout] = React.useState('')
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
     console.log({ github, about })
   }
