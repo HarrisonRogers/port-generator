@@ -1,14 +1,9 @@
-import type { Career } from '../data'
-import { careers } from '../data'
+import type { Career, GeneratedPortfolio } from '#/lib/portfolioSchema'
+import { Link } from '@tanstack/react-router'
+import { formatCareerDate, sortCareers } from './careerUtils'
 
-export function CareerContent() {
-  const sortedCareers = [...careers].sort((a, b) =>
-    a.endDate === 'Present'
-      ? -1
-      : b.endDate === 'Present'
-        ? 1
-        : new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
-  )
+export function CareerContent({ data }: { data: GeneratedPortfolio }) {
+  const sortedCareers = [...data.careers].sort(sortCareers)
 
   return (
     <div>
@@ -16,47 +11,58 @@ export function CareerContent() {
         Career
       </h1>
 
-      <ol className="relative border-s border-gray-200 dark:border-gray-700">
-        {sortedCareers.map((career) => (
-          <CareerTimelineItem
-            key={`${career.company}-${career.startDate}`}
-            career={career}
-          />
-        ))}
-      </ol>
+      {sortedCareers.length > 0 ? (
+        <ol className="relative border-s border-gray-200 dark:border-gray-700">
+          {sortedCareers.map((career) => (
+            <CareerTimelineItem
+              key={`${career.company}-${career.startDate}`}
+              career={career}
+            />
+          ))}
+        </ol>
+      ) : (
+        <p className="text-base leading-7 text-neutral-700 dark:text-neutral-300">
+          Public GitHub data did not include enough evidence to infer career
+          history.
+        </p>
+      )}
+      <p className="text-sm leading-6 text-neutral-500 dark:text-neutral-400">
+        {data.notes.careerInference} Review and edit these career entries before
+        publishing the downloaded source.
+      </p>
     </div>
   )
 }
 
 function CareerTimelineItem({ career }: { career: Career }) {
+  const company = career.url ? (
+    <Link
+      to={career.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="mb-2 text-base font-normal text-gray-500 underline underline-offset-2 hover:no-underline dark:text-gray-400"
+    >
+      {career.company}
+    </Link>
+  ) : (
+    <p className="mb-2 text-base font-normal text-gray-500 dark:text-gray-400">
+      {career.company}
+    </p>
+  )
+
   return (
     <li className="mb-10 ms-4">
       <div className="absolute -inset-s-1.5 mt-1.5 size-3 rounded-full border border-white bg-gray-200 dark:border-gray-900 dark:bg-gray-700" />
 
       <time className="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-        {formatDate(career.startDate)} - {formatDate(career.endDate)}
+        {formatCareerDate(career.startDate)} -{' '}
+        {formatCareerDate(career.endDate)}
       </time>
 
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
         {career.title}
       </h3>
-      <a
-        href={career.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mb-2 text-base font-normal text-gray-500 dark:text-gray-400"
-      >
-        {career.company}
-      </a>
+      {company}
     </li>
   )
-}
-
-function formatDate(dateString: string) {
-  if (dateString === 'Present') return 'Present'
-
-  return new Intl.DateTimeFormat('en', {
-    month: 'long',
-    year: 'numeric',
-  }).format(new Date(dateString))
 }

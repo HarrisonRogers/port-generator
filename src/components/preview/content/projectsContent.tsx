@@ -1,10 +1,7 @@
-import type { Project } from '../data'
-import { projects } from '../data'
+import type { GeneratedPortfolio, Project } from '#/lib/portfolioSchema'
+import { Link } from '@tanstack/react-router'
 
-export function ProjectsContent() {
-  const personalProjects = projects.filter((project) => project.personal)
-  const workProjects = projects.filter((project) => !project.personal)
-
+export function ProjectsContent({ data }: { data: GeneratedPortfolio }) {
   return (
     <div>
       <div className="flex items-center gap-2">
@@ -12,8 +9,10 @@ export function ProjectsContent() {
           Projects
         </h1>
       </div>
-      <ProjectList projectList={workProjects} title="Work" />
-      <ProjectList projectList={personalProjects} title="Personal" />
+      <ProjectList projectList={data.projects} title="Featured" />
+      <p className="text-sm leading-6 text-neutral-500 dark:text-neutral-400">
+        {data.notes.projectSelection}
+      </p>
     </div>
   )
 }
@@ -37,8 +36,8 @@ function ProjectList({ projectList, title }: ProjectListProps) {
             <div className="flex w-full flex-col items-start justify-between space-y-1 sm:flex-row sm:items-center sm:space-x-2 sm:space-y-0">
               <div className="flex items-center space-x-2">
                 {project.url ? (
-                  <a
-                    href={project.url}
+                  <Link
+                    to={project.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-black underline underline-offset-2 transition hover:no-underline dark:text-white"
@@ -46,7 +45,7 @@ function ProjectList({ projectList, title }: ProjectListProps) {
                     <h3 className="text-base font-normal tracking-normal">
                       {project.title}
                     </h3>
-                  </a>
+                  </Link>
                 ) : (
                   <h3 className="text-base font-normal tracking-normal text-black dark:text-white">
                     {project.title}
@@ -54,8 +53,8 @@ function ProjectList({ projectList, title }: ProjectListProps) {
                 )}
 
                 {project.sourceCode ? (
-                  <a
-                    href={project.sourceCode}
+                  <Link
+                    to={project.sourceCode}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-neutral-500 transition hover:opacity-70 dark:text-neutral-400"
@@ -65,12 +64,19 @@ function ProjectList({ projectList, title }: ProjectListProps) {
                       Source Code
                     </span>
                     )
-                  </a>
+                  </Link>
                 ) : null}
               </div>
               <p className="text-neutral-600 tracking-tight dark:text-neutral-400">
                 {project.description}
               </p>
+              {project.languages.length > 0 || Boolean(project.stars) ? (
+                <p className="text-sm text-neutral-500 dark:text-neutral-500">
+                  {project.languages.join(', ')}
+                  {project.languages.length > 0 && project.stars ? ' - ' : ''}
+                  {project.stars ? `${project.stars} stars` : ''}
+                </p>
+              ) : null}
             </div>
           </article>
         ))}

@@ -1,4 +1,5 @@
 import { PreviewContent } from '#/components/preview/content'
+import { defaultPortfolioData } from '#/components/preview/data'
 import { Link } from '@tanstack/react-router'
 
 export function PortfolioPreview() {
@@ -21,7 +22,7 @@ export function PortfolioPreview() {
       <div className="overflow-hidden rounded-2xl border border-border bg-white p-3 shadow-2xl dark:bg-background z-20">
         <div className="min-h-136 overflow-y-auto overflow-x-hidden rounded-xl border border-border dark:bg-background">
           <div className="min-h-full origin-top scale-90">
-            <PreviewContent variant="card" />
+            <PreviewContent variant="card" data={defaultPortfolioData} />
           </div>
         </div>
       </div>
