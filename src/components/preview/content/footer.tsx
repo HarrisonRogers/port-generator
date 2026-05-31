@@ -49,7 +49,7 @@ export function Footer() {
   return (
     <footer className="mb-16 flex items-center justify-between">
       <p className="mt-8 text-neutral-600 dark:text-neutral-300">
-        {new Date().getFullYear()} Elon Musk
+        {new Date().getFullYear()} Harrison Rogers
       </p>
       <div className="mt-8 flex items-center gap-4">
         {socialLinks.map((link) => (

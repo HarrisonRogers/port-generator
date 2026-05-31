@@ -26,16 +26,18 @@ export function PreviewContent({ variant = 'page' }: PreviewContentProps) {
   return (
     <div
       className={[
-        'bg-white text-black dark:bg-black dark:text-white',
+        'text-black dark:text-white',
         isCard
-          ? 'h-full overflow-hidden rounded-xl [&_aside]:mb-8 [&_button]:text-sm [&_footer]:mb-0 [&_footer]:text-xs [&_h1]:mb-5 [&_h1]:text-xl [&_p]:text-sm [&_p]:leading-6'
-          : 'min-h-screen',
+          ? 'min-h-full rounded-xl [&_aside]:mb-8 [&_button]:text-base [&_footer]:mb-0 [&_footer]:text-xs [&_h1]:mb-5 [&_h1]:text-3xl [&_p]:text-sm [&_p]:leading-6'
+          : '',
       ].join(' ')}
     >
       <main
         className={[
           'flex-auto px-2 pb-1 md:px-0',
-          isCard ? 'mx-auto max-w-xl py-8' : 'mx-4 mt-8 lg:mx-auto lg:max-w-xl',
+          isCard
+            ? 'mx-auto max-w-xl py-8'
+            : 'mx-4 mt-8 lg:mx-auto lg:max-w-[630px]',
         ].join(' ')}
       >
         <Navbar activeTab={activeTab} onTabChange={setActiveTab} />

@@ -1,23 +1,19 @@
+import { profile } from '../data'
+
 export function HomeContent() {
   return (
-    <>
-      <h1 className="mb-8 text-2xl font-semibold tracking-tighter">
-        Elon Musk
+    <div>
+      <h1 className="font-serif text-6xl font-normal tracking-wide">
+        {profile.name}
       </h1>
-      <p className="mb-4 text-base leading-7">
-        Elon Musk is an entrepreneur and technologist known for building
-        companies around ambitious engineering problems. His work spans electric
-        vehicles at Tesla, reusable rockets at SpaceX, satellite internet
-        through Starlink, artificial intelligence, tunneling, and digital
-        platforms.
+      <p className="mt-7 text-base leading-7">
+        I&apos;m an {profile.title} with a full-stack background, specializing
+        in TypeScript, React, React Native, and Rust.
       </p>
-      <p className="mb-8 text-base leading-7">
-        His public profile is shaped by a willingness to push fast product
-        cycles, challenge mature industries, and focus teams on large-scale
-        technical goals. Whether people follow him for innovation, controversy,
-        or business strategy, his influence on modern technology is hard to
-        miss.
+      <p className="mt-5 text-base leading-7">
+        I am a passionate AI tinkerer and am constantly building and toying with
+        the latest features, tools, applications, and automations.
       </p>
-    </>
+    </div>
   )
 }

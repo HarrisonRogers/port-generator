@@ -18,9 +18,9 @@ export function PortfolioPreview() {
         </Link>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-border bg-card p-3 shadow-2xl">
-        <div className="h-136 overflow-hidden rounded-xl border border-border bg-white dark:bg-black">
-          <div className="origin-top scale-90">
+      <div className="overflow-hidden rounded-2xl border border-border bg-white p-3 shadow-2xl dark:bg-black">
+        <div className="h-136 overflow-y-auto overflow-x-hidden rounded-xl border border-border bg-white dark:bg-black">
+          <div className="min-h-full origin-top scale-90">
             <PreviewContent variant="card" />
           </div>
         </div>
