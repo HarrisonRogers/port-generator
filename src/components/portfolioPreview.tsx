@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router'
 
 export function PortfolioPreview() {
   return (
-    <section className="z-10 mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-24">
+    <section className="z-10 mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-4">
       <div className="flex items-end justify-between gap-4">
         <div>
           <h2 className="font-serif text-4xl font-normal tracking-wide sm:text-5xl">
@@ -13,10 +13,7 @@ export function PortfolioPreview() {
             See what your portfolio will look like
           </p>
         </div>
-        <Link
-          to="/preview"
-          className="shrink-0 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-card-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground"
-        >
+        <Link to="/preview" className="z-20">
           Open preview
         </Link>
       </div>

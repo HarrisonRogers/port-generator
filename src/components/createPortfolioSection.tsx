@@ -34,6 +34,7 @@ export function CreatePortfolioSection() {
               placeholder="e.g. torvalds"
               value={github}
               onChange={(e) => setGithub(e.target.value)}
+              autoComplete="username"
             />
           </div>
 
@@ -41,7 +42,7 @@ export function CreatePortfolioSection() {
             <Label htmlFor="about">About you</Label>
             <Textarea
               id="about"
-              placeholder="Share a few facts about yourself, your interests, and what you build..."
+              placeholder="Share a few optional facts about yourself, your interests, and what you build..."
               value={about}
               onChange={(e) => setAbout(e.target.value)}
               className="min-h-32"

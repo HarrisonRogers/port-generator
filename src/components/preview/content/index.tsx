@@ -7,7 +7,7 @@ import { HomeContent } from './homeContent'
 import { ProjectsContent } from './projectsContent'
 import React from 'react'
 import { Navbar } from '../navbar'
-import { Footer } from '../footer'
+import { Footer } from './footer'
 
 type PreviewContentProps = {
   variant?: 'page' | 'card'
