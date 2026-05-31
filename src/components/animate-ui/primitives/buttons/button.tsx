@@ -14,7 +14,7 @@ type ButtonProps = WithAsChild<
 >
 
 function Button({
-  hoverScale = 1.05,
+  hoverScale = 1.02,
   tapScale = 0.95,
   asChild = false,
   ...props

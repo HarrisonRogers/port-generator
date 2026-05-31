@@ -15,11 +15,9 @@ export function CreatePortfolioSection() {
   }
 
   return (
-    <section className="z-10 mx-auto flex h-screen w-full max-w-lg flex-col items-center justify-center gap-6">
-      <h1 className="font-serif text-6xl font-normal tracking-wider">
-        Build Your Portfolio
-      </h1>
-      <p>Just enter your Github username</p>
+    <section className="z-10 mx-auto flex h-screen w-full max-w-3xl flex-col items-center justify-center gap-6">
+      <h1 className="text-6xl font-normal">Build Your Portfolio</h1>
+      <p className="text-muted-foreground">Just enter your Github username</p>
 
       <form
         onSubmit={handleSubmit}
