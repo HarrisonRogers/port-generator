@@ -1,13 +1,13 @@
 import { z } from 'zod'
 
-export const socialLinkSchema = z.object({
+const socialLinkSchema = z.object({
   label: z
     .enum(['GitHub', 'X', 'LinkedIn'])
     .describe('Only GitHub, X, or LinkedIn profile links belong here.'),
   url: z.string().min(1),
 })
 
-export const profileSchema = z.object({
+const profileSchema = z.object({
   name: z.string().min(1),
   username: z.string().min(1),
   headline: z
@@ -34,13 +34,13 @@ export const profileSchema = z.object({
     ),
 })
 
-export const techStackSchema = z.object({
+const techStackSchema = z.object({
   languages: z.array(z.string()),
   frontend: z.array(z.string()),
   backend: z.array(z.string()),
 })
 
-export const projectSchema = z.object({
+const projectSchema = z.object({
   title: z.string().min(1),
   description: z
     .string()
@@ -62,7 +62,7 @@ export const projectSchema = z.object({
   updatedAt: z.string(),
 })
 
-export const careerSchema = z.object({
+const careerSchema = z.object({
   title: z.string().min(1),
   company: z.string().min(1),
   startDate: z.string().min(1),
