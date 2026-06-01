@@ -1,7 +1,7 @@
 import { experimental_useObject as useObject } from '@ai-sdk/react'
 import { createFileRoute } from '@tanstack/react-router'
 import type { DeepPartial } from 'ai'
-import { AlertCircle, ExternalLink, LoaderCircle, Sparkles } from 'lucide-react'
+import { AlertCircle, ExternalLink, Sparkles } from 'lucide-react'
 import * as React from 'react'
 
 import { Button } from '#/components/animate-ui/components/buttons/button'
@@ -66,7 +66,9 @@ function GeneratePortfolio() {
     storeGeneratedPortfolio(generatedPortfolio)
   }, [generatedPortfolio, isLoading])
 
-  const previewPortfolio = generatedPortfolio ?? storedPortfolio
+  const previewPortfolio = isLoading
+    ? null
+    : (generatedPortfolio ?? storedPortfolio)
   const generationMessage = getGenerationMessage(object, isLoading)
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -110,11 +112,7 @@ function GeneratePortfolio() {
             </div>
 
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? (
-                <LoaderCircle className="size-4 animate-spin" />
-              ) : (
-                <Sparkles className="size-4" />
-              )}
+              <Sparkles className="size-4" />
               Generate
             </Button>
           </form>
@@ -139,13 +137,12 @@ function GeneratePortfolio() {
                 <span className="size-2.5 rounded-full bg-destructive" />
                 <span className="size-2.5 rounded-full bg-chart-2" />
                 <span className="size-2.5 rounded-full bg-chart-3" />
-                <p className="truncate text-sm text-muted-foreground">
-                  {generationMessage}
-                </p>
+                {!isLoading ? (
+                  <p className="truncate text-sm text-muted-foreground">
+                    {generationMessage}
+                  </p>
+                ) : null}
               </div>
-              {isLoading ? (
-                <LoaderCircle className="size-4 shrink-0 animate-spin text-muted-foreground" />
-              ) : null}
             </div>
 
             <div className="min-h-136 flex-1 overflow-y-auto overflow-x-hidden bg-background">
@@ -156,9 +153,6 @@ function GeneratePortfolio() {
               ) : (
                 <div className="flex min-h-full items-center justify-center p-8 text-center">
                   <div className="max-w-sm space-y-3">
-                    {isLoading ? (
-                      <LoaderCircle className="mx-auto size-5 animate-spin text-muted-foreground" />
-                    ) : null}
                     <p className="text-base text-muted-foreground">
                       {generationMessage}
                     </p>
