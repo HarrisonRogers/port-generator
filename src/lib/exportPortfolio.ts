@@ -12,7 +12,6 @@ import siteNavTemplate from '../../templates/portfolio/components/siteNav.tsx?ra
 import techStackCardTemplate from '../../templates/portfolio/components/techStackCard.tsx?raw'
 import eslintConfigTemplate from '../../templates/portfolio/eslint.config.mjs?raw'
 import portfolioUtilsTemplate from '../../templates/portfolio/lib/portfolioUtils.ts?raw'
-import nextEnvTemplate from '../../templates/portfolio/next-env.d.ts?raw'
 import nextConfigTemplate from '../../templates/portfolio/next.config.ts?raw'
 import packageTemplate from '../../templates/portfolio/package.json?raw'
 import postcssConfigTemplate from '../../templates/portfolio/postcss.config.mjs?raw'
@@ -23,6 +22,14 @@ type ExportFile = {
   path: string
   content: string
 }
+
+const nextEnvTemplate = `/// <reference types="next" />
+/// <reference types="next/image-types/global" />
+import "./.next/types/routes.d.ts";
+
+// NOTE: This file should not be edited
+// see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
+`
 
 export function downloadPortfolioNextApp(portfolio: GeneratedPortfolio) {
   const files = createPortfolioNextAppFiles(portfolio)
