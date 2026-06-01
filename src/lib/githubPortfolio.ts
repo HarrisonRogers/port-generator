@@ -60,7 +60,7 @@ type PinnedRepoNode = {
   }
 }
 
-export type RawGitHubProject = {
+type RawGitHubProject = {
   name: string
   fullName: string
   description: string
@@ -74,7 +74,7 @@ export type RawGitHubProject = {
   source: 'pinned' | 'recent-contribution' | 'owned-repo'
 }
 
-export type RawGitHubPortfolio = {
+type RawGitHubPortfolio = {
   user: {
     username: string
     name: string

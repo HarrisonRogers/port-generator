@@ -1,8 +1,5 @@
 import type { GeneratedPortfolio } from '#/lib/portfolioSchema'
 
-export type Project = GeneratedPortfolio['projects'][number]
-export type Career = GeneratedPortfolio['careers'][number]
-
 export const defaultPortfolioData: GeneratedPortfolio = {
   profile: {
     name: 'Harrison Rogers',

@@ -1,6 +1,5 @@
 import { strToU8, zipSync } from 'fflate'
 
-import gitignoreTemplate from '../../templates/portfolio/.gitignore?raw'
 import aboutPageTemplate from '../../templates/portfolio/app/about/page.tsx?raw'
 import careerPageTemplate from '../../templates/portfolio/app/career/page.tsx?raw'
 import globalsTemplate from '../../templates/portfolio/app/globals.css?raw'
@@ -22,6 +21,49 @@ type ExportFile = {
   path: string
   content: string
 }
+
+const gitignoreTemplate = `# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+`
 
 const nextEnvTemplate = `/// <reference types="next" />
 /// <reference types="next/image-types/global" />

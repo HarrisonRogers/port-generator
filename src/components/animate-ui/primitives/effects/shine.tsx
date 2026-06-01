@@ -271,4 +271,4 @@ const Shine = ({
   );
 };
 
-export { Shine, type ShineProps };
+export { Shine };
