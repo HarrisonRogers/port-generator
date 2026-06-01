@@ -15,6 +15,7 @@ import {
   storeGeneratedPortfolio,
   useStoredGeneratedPortfolio,
 } from '#/hooks/useGeneratedPortfolio'
+import { consumeStoredGenerateAbout } from '#/lib/generateContextStorage'
 import type { GeneratedPortfolio } from '#/lib/portfolioSchema'
 import {
   generatedPortfolioSchema,
@@ -23,8 +24,12 @@ import {
 
 export const Route = createFileRoute('/generate')({
   validateSearch: (search) => ({
-    github: typeof search.github === 'string' ? search.github : '',
-    about: typeof search.about === 'string' ? search.about : '',
+    githubUrl:
+      typeof search.githubUrl === 'string'
+        ? search.githubUrl
+        : typeof search.github === 'string'
+          ? search.github
+          : '',
     generate: search.generate === '1' ? '1' : '',
   }),
   component: GeneratePortfolio,
@@ -33,8 +38,8 @@ export const Route = createFileRoute('/generate')({
 function GeneratePortfolio() {
   const search = Route.useSearch()
   const navigate = Route.useNavigate()
-  const [github, setGithub] = React.useState(search.github)
-  const [about, setAbout] = React.useState(search.about)
+  const [githubUrl, setGithubUrl] = React.useState(search.githubUrl)
+  const [about, setAbout] = React.useState('')
   const hasSubmittedSearch = React.useRef(false)
   const storedPortfolio = useStoredGeneratedPortfolio()
   const { object, submit, isLoading, error } = useObject({
@@ -46,19 +51,25 @@ function GeneratePortfolio() {
   }, [object])
 
   React.useEffect(() => {
-    if (search.generate !== '1' || !search.github || hasSubmittedSearch.current)
+    if (
+      search.generate !== '1' ||
+      !search.githubUrl ||
+      hasSubmittedSearch.current
+    )
       return
 
     hasSubmittedSearch.current = true
+    const storedAbout = consumeStoredGenerateAbout()
+    setAbout(storedAbout)
     navigate({
       replace: true,
-      search: { github: search.github, about: search.about, generate: '' },
+      search: { githubUrl: search.githubUrl, generate: '' },
     })
     submit({
-      username: search.github,
-      about: search.about,
+      githubUrl: search.githubUrl,
+      about: storedAbout,
     })
-  }, [navigate, search.about, search.generate, search.github, submit])
+  }, [navigate, search.generate, search.githubUrl, submit])
 
   React.useEffect(() => {
     if (!generatedPortfolio || isLoading) return
@@ -73,7 +84,7 @@ function GeneratePortfolio() {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    submit({ username: github, about })
+    submit({ githubUrl, about })
   }
 
   return (
@@ -89,19 +100,26 @@ function GeneratePortfolio() {
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="github">GitHub username</Label>
+              <Label htmlFor="github">GitHub profile URL</Label>
               <Input
                 id="github"
-                value={github}
-                onChange={(event) => setGithub(event.target.value)}
-                placeholder="e.g. torvalds"
-                autoComplete="username"
+                type="url"
+                value={githubUrl}
+                onChange={(event) => setGithubUrl(event.target.value)}
+                placeholder="https://github.com/torvalds"
+                autoComplete="url"
+                required
                 className="bg-background text-foreground placeholder:text-muted-foreground autofill:[-webkit-text-fill-color:var(--foreground)]"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="about">Optional personal context</Label>
+              <Label htmlFor="about">
+                About you
+                <span className="rounded-full border border-border px-2 py-0.5 text-xs font-normal text-muted-foreground">
+                  Optional
+                </span>
+              </Label>
               <Textarea
                 id="about"
                 value={about}
@@ -194,11 +212,11 @@ function getGenerationMessage(
   if (!isLoading) {
     return object
       ? 'Portfolio preview is ready.'
-      : 'Submit a GitHub username to generate a portfolio preview.'
+      : 'Submit a GitHub profile URL to generate a portfolio preview.'
   }
 
   if (!object?.profile?.name) {
-    return 'Reading the GitHub profile and planning the portfolio...'
+    return 'Reading the GitHub profile...'
   }
 
   if (!object.home?.intro) {

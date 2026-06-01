@@ -6,8 +6,25 @@ import { z } from 'zod'
 import { fetchRawGitHubPortfolio } from '#/lib/githubPortfolio'
 import { generatedPortfolioSchema } from '#/lib/portfolioSchema'
 
+function isGitHubUrl(value: string) {
+  try {
+    const url = new URL(value)
+    const hostname = url.hostname.toLowerCase()
+    const hasProfilePath = url.pathname.split('/').filter(Boolean).length > 0
+    const isHttpUrl = url.protocol === 'https:' || url.protocol === 'http:'
+
+    return (
+      isHttpUrl &&
+      hasProfilePath &&
+      (hostname === 'github.com' || hostname === 'www.github.com')
+    )
+  } catch {
+    return false
+  }
+}
+
 const requestSchema = z.object({
-  username: z.string().min(1),
+  githubUrl: z.url().refine(isGitHubUrl, 'Enter a valid GitHub profile URL.'),
   about: z.string().optional().default(''),
 })
 
@@ -18,7 +35,7 @@ const systemPrompt = [
   'Use only evidence in the supplied GitHub data and optional personal context.',
   'Do not invent employers, dates, projects, social links, or technologies.',
   'All schema keys are required. Use an empty string for unknown URL, location, avatar, website, date, or source fields, and use 0 for unknown star counts.',
-  'If career history is not clearly supported, return an empty careers array and explain the limitation in notes.careerInference.',
+  'If career history is not clearly supported, return visible placeholder career entries with bracketed [REPLACE_...] markers instead of an empty careers array. Keep their confidence low and explain the limitation in notes.careerInference.',
   'Projects must come from the provided project list only. Keep the order provided, because it already represents pinned repos or the fallback selection.',
   'For each generated project, set sourceCode to the raw project.url GitHub repository URL.',
   'For each generated project, set url only to a separate live homepage/demo from the raw homepage field. If there is no homepage/demo, url must be an empty string. Never duplicate the repository URL into url.',
@@ -32,7 +49,8 @@ const writingInstructions = [
   'Do not reuse a full sentence from the README or repo descriptions. Avoid distinctive README phrases unless they are proper nouns, product names, company names, or technology names.',
   'Make the copy sound like a polished personal portfolio: specific, confident, plain-spoken, and not marketing-heavy.',
   'Prefer active verbs and concrete outcomes. Avoid filler phrases such as "passionate about", "leveraging cutting-edge", "seamlessly", "robust", and "innovative solutions" unless the source data makes them unavoidable.',
-  'Use first person for home.intro and about.paragraphs when it reads naturally. Use third person only if the supplied context clearly uses that voice.',
+  "Always write home.intro and about.paragraphs in first person from the portfolio owner's point of view, as if the owner wrote the site. Convert any third-person optional context into first-person copy.",
+  'Do not refer to the portfolio owner by name or use third-person pronouns such as he, she, they, his, her, or their in home.intro or about.paragraphs.',
   'Keep profile.headline as a short role-style noun phrase that fits after "I\'m a".',
   'Keep home.intro to 1-2 sentences, about.paragraphs to 1-3 short paragraphs, highlights to short scannable bullets, and each project description to one short paragraph.',
   'For project descriptions, explain what the project appears to do and why it matters in 1-2 concise sentences; do not just repeat the repository description.',
@@ -51,8 +69,8 @@ export const Route = createFileRoute('/api/generate-portfolio')({
         }
 
         const body: unknown = await request.json()
-        const { username, about } = requestSchema.parse(body)
-        const rawPortfolio = await fetchRawGitHubPortfolio(username, about)
+        const { githubUrl, about } = requestSchema.parse(body)
+        const rawPortfolio = await fetchRawGitHubPortfolio(githubUrl, about)
 
         const result = streamText({
           model: openai(model),
@@ -67,7 +85,7 @@ export const Route = createFileRoute('/api/generate-portfolio')({
             'For notes.projectSelection, say whether pinned projects were used or which fallback was used.',
             'For techStack, combine repo languages, repo topics, profile README mentions, and optional personal context. Put applicable tools into frontend or backend instead of creating a separate tools category.',
             'For profile.socialLinks, include only the user GitHub profile, X/Twitter profile, and LinkedIn profile when found. Do not include websites, email, project pages, repositories, employers, or any other links.',
-            'For career data, inspect company, profile README, bio, and optional context for explicit current or past workplaces.',
+            'For career data, inspect company, profile README, bio, and optional context for explicit current or past workplaces. If none are explicit, add placeholder entries with labels like [REPLACE_ROLE_TITLE] and [REPLACE_COMPANY_NAME] so the career page remains visible and editable.',
             JSON.stringify(rawPortfolio, null, 2),
           ].join('\n\n'),
         })

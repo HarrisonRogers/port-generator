@@ -99,13 +99,13 @@ const GITHUB_GRAPHQL_URL = 'https://api.github.com/graphql'
 const PROJECT_LIMIT = 4
 
 export async function fetchRawGitHubPortfolio(
-  usernameInput: string,
+  githubUrl: string,
   personalAbout: string,
 ) {
-  const username = normalizeGitHubUsername(usernameInput)
+  const username = normalizeGitHubUsername(githubUrl)
 
   if (!username) {
-    throw new Error('Enter a GitHub username or profile URL.')
+    throw new Error('Enter a GitHub profile URL.')
   }
 
   const user = await fetchGitHubJson<GitHubUser>(

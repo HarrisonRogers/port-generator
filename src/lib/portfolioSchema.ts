@@ -63,13 +63,55 @@ const projectSchema = z.object({
 })
 
 const careerSchema = z.object({
-  title: z.string().min(1),
-  company: z.string().min(1),
-  startDate: z.string().min(1),
-  endDate: z.string().min(1),
+  title: z
+    .string()
+    .min(1)
+    .describe(
+      'Use a real role title only when supported. If no career history is found, use a bracketed placeholder such as [REPLACE_ROLE_TITLE].',
+    ),
+  company: z
+    .string()
+    .min(1)
+    .describe(
+      'Use a real company only when supported. If no career history is found, use a bracketed placeholder such as [REPLACE_COMPANY_NAME].',
+    ),
+  startDate: z
+    .string()
+    .min(1)
+    .describe(
+      'Use a real start date only when supported. If no career history is found, use a bracketed placeholder such as [REPLACE_START_DATE].',
+    ),
+  endDate: z
+    .string()
+    .min(1)
+    .describe(
+      'Use a real end date, Present, or a bracketed placeholder such as [REPLACE_END_DATE].',
+    ),
   url: z.string(),
   confidence: z.enum(['high', 'medium', 'low']),
 })
+
+const placeholderCareers: Array<z.infer<typeof careerSchema>> = [
+  {
+    title: '[REPLACE_ROLE_TITLE]',
+    company: '[REPLACE_COMPANY_NAME]',
+    startDate: '[REPLACE_START_DATE]',
+    endDate: 'Present',
+    url: '',
+    confidence: 'low',
+  },
+  {
+    title: '[REPLACE_PREVIOUS_ROLE_TITLE]',
+    company: '[REPLACE_PREVIOUS_COMPANY_NAME]',
+    startDate: '[REPLACE_PREVIOUS_START_DATE]',
+    endDate: '[REPLACE_PREVIOUS_END_DATE]',
+    url: '',
+    confidence: 'low',
+  },
+]
+
+const placeholderCareerInference =
+  'No explicit career history was found in the provided GitHub data, so placeholder career entries with [REPLACE_...] markers were added for editing.'
 
 export const generatedPortfolioSchema = z.object({
   profile: profileSchema,
@@ -78,7 +120,7 @@ export const generatedPortfolioSchema = z.object({
       .string()
       .min(1)
       .describe(
-        'One or two human-sounding sentences that introduce the person in new wording based on the evidence.',
+        'One or two human-sounding first-person sentences that introduce the portfolio owner in new wording based on the evidence.',
       ),
     highlights: z
       .array(
@@ -96,7 +138,7 @@ export const generatedPortfolioSchema = z.object({
         z
           .string()
           .describe(
-            'A short paragraph that synthesizes supported GitHub and personal context into original portfolio prose.',
+            "A short first-person paragraph that synthesizes supported GitHub and personal context into original portfolio prose from the portfolio owner's point of view.",
           ),
       )
       .min(1)
@@ -132,11 +174,36 @@ function normalizeGeneratedPortfolio(value: unknown) {
 
   return {
     ...value,
+    careers: normalizeCareers(value.careers),
+    notes: normalizeNotes(value.notes, value.careers),
     projects: normalizeProjects(value.projects),
     profile: {
       ...profile,
       socialLinks: normalizeSocialLinks(profile.socialLinks),
     },
+  }
+}
+
+function normalizeCareers(value: unknown) {
+  if (Array.isArray(value) && value.length === 0) {
+    return placeholderCareers
+  }
+
+  return value
+}
+
+function normalizeNotes(notes: unknown, careers: unknown) {
+  if (!isRecord(notes) || !Array.isArray(careers) || careers.length > 0) {
+    return notes
+  }
+
+  return {
+    ...notes,
+    careerInference:
+      typeof notes.careerInference === 'string' &&
+      notes.careerInference.length > 0
+        ? `${notes.careerInference} ${placeholderCareerInference}`
+        : placeholderCareerInference,
   }
 }
 

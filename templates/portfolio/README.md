@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio
 
-## Getting Started
+This is a standalone Next.js portfolio exported from Port Generator. It is organized so the portfolio content is easy to find, review, and edit.
 
-First, run the development server:
+## Set Up
+
+Install the packages first. This creates the `node_modules` folder the app needs to run and build.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Initialize Git
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a new Git repository for this exported project and make your first commit.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+git init
+git add .
+git commit -m "Initial portfolio"
+```
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Push the repository to GitHub, GitLab, or Bitbucket so Vercel can import it.
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Go to [Vercel](https://vercel.com/new).
+2. Import the Git repository for this portfolio.
+3. Keep the default Next.js settings.
+4. Click **Deploy**.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Vercel will install dependencies, build the app, and give you a live URL.
+
+## Edit the Portfolio
+
+Most portfolio content lives in `data/portfolio.ts`. The pages are clearly split across the `app` folder:
+
+- `app/page.tsx` controls the home page.
+- `app/about/page.tsx` controls the about page.
+- `app/projects/page.tsx` controls the projects page.
+- `app/career/page.tsx` controls the career page.
+
+You can ask an AI coding assistant to edit specific sections of the portfolio. For example, ask it to update the project descriptions, rewrite the about page, add a new career entry, or adjust the styling.
+
+Run `npm run build` before deploying changes to confirm the portfolio still builds successfully.
