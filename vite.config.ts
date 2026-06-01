@@ -11,6 +11,7 @@ import { nitro } from 'nitro/vite'
 const config = defineConfig({
   resolve: {
     alias: {
+      '@': resolve(process.cwd(), 'src'),
       tslib: resolve(process.cwd(), 'src/lib/tslibShim.ts'),
     },
   },

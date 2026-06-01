@@ -1,14 +1,7 @@
 import { experimental_useObject as useObject } from '@ai-sdk/react'
 import { createFileRoute } from '@tanstack/react-router'
 import type { DeepPartial } from 'ai'
-import {
-  AlertCircle,
-  CheckCircle2,
-  ExternalLink,
-  Github,
-  LoaderCircle,
-  Sparkles,
-} from 'lucide-react'
+import { AlertCircle, ExternalLink, LoaderCircle, Sparkles } from 'lucide-react'
 import * as React from 'react'
 
 import { Button } from '#/components/animate-ui/components/buttons/button'
@@ -74,6 +67,7 @@ function GeneratePortfolio() {
   }, [generatedPortfolio, isLoading])
 
   const previewPortfolio = generatedPortfolio ?? storedPortfolio
+  const generationMessage = getGenerationMessage(object, isLoading)
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -81,21 +75,14 @@ function GeneratePortfolio() {
   }
 
   return (
-    <main className="min-h-screen bg-background px-4 py-10">
-      <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[360px_1fr]">
-        <section className="rounded-lg border border-border bg-card p-5 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-md border border-border bg-background">
-              <Github className="size-5" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-semibold tracking-normal">
-                Generate portfolio
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Fetch GitHub, analyze it, then preview the result.
-              </p>
-            </div>
+    <main className="min-h-screen bg-background px-4 py-6 lg:px-6">
+      <div className="mx-auto grid w-full max-w-[1500px] gap-5 xl:grid-cols-[340px_minmax(0,1fr)]">
+        <aside className="rounded-lg border border-border bg-card p-5 shadow-sm xl:sticky xl:top-6 xl:h-fit">
+          <div>
+            <h2 className="text-lg font-semibold tracking-normal">Generate</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Add a GitHub profile and optional context.
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-5">
@@ -132,6 +119,8 @@ function GeneratePortfolio() {
             </Button>
           </form>
 
+          <GenerationStatus portfolio={previewPortfolio} />
+
           {error ? (
             <div className="mt-5 flex gap-3 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
               <AlertCircle className="mt-0.5 size-4 shrink-0" />
@@ -141,46 +130,39 @@ function GeneratePortfolio() {
               </p>
             </div>
           ) : null}
+        </aside>
 
-          <GenerationSteps object={object} isLoading={isLoading} />
-        </section>
-
-        <section className="space-y-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="text-xl font-semibold tracking-normal">
-                Portfolio preview
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Review the latest generated site before sharing it.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {previewPortfolio ? (
-                <Link to="/preview" variant="outline" className="shrink-0">
-                  <ExternalLink className="size-4" />
-                  Open full preview
-                </Link>
+        <section className="flex min-h-[calc(100vh-3rem)] flex-col">
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm">
+            <div className="flex min-h-14 items-center justify-between gap-4 border-b border-border px-4 py-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="size-2.5 rounded-full bg-destructive" />
+                <span className="size-2.5 rounded-full bg-chart-2" />
+                <span className="size-2.5 rounded-full bg-chart-3" />
+                <p className="truncate text-sm text-muted-foreground">
+                  {generationMessage}
+                </p>
+              </div>
+              {isLoading ? (
+                <LoaderCircle className="size-4 shrink-0 animate-spin text-muted-foreground" />
               ) : null}
-              <ExportPortfolioButton
-                portfolio={previewPortfolio}
-                className="shrink-0"
-              />
             </div>
-          </div>
 
-          <div className="rounded-lg border border-border bg-card p-3 shadow-sm">
-            <div className="min-h-136 overflow-y-auto overflow-x-hidden rounded-md border border-border bg-background">
+            <div className="min-h-136 flex-1 overflow-y-auto overflow-x-hidden bg-background">
               {previewPortfolio ? (
-                <div className="min-h-full origin-top scale-90">
+                <div className="min-h-full origin-top scale-95 sm:scale-100">
                   <PreviewContent variant="card" data={previewPortfolio} />
                 </div>
               ) : (
-                <div className="flex min-h-136 items-center justify-center p-8 text-center text-muted-foreground">
-                  {isLoading
-                    ? 'Generating portfolio preview...'
-                    : 'Submit a GitHub username to generate a portfolio preview.'}
+                <div className="flex min-h-full items-center justify-center p-8 text-center">
+                  <div className="max-w-sm space-y-3">
+                    {isLoading ? (
+                      <LoaderCircle className="mx-auto size-5 animate-spin text-muted-foreground" />
+                    ) : null}
+                    <p className="text-base text-muted-foreground">
+                      {generationMessage}
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
@@ -191,39 +173,61 @@ function GeneratePortfolio() {
   )
 }
 
-type GenerationStepsProps = {
-  object: DeepPartial<GeneratedPortfolio> | undefined
-  isLoading: boolean
+type GenerationStatusProps = {
+  portfolio: GeneratedPortfolio | null
 }
 
-function GenerationSteps({ object, isLoading }: GenerationStepsProps) {
-  const steps = [
-    { label: 'Home page', complete: Boolean(object?.home?.intro) },
-    {
-      label: 'About page',
-      complete: Boolean(object?.about?.paragraphs?.length),
-    },
-    { label: 'Projects page', complete: Boolean(object?.projects?.length) },
-    { label: 'Careers page', complete: Boolean(object?.careers) },
-  ]
-
+function GenerationStatus({ portfolio }: GenerationStatusProps) {
   return (
-    <div className="mt-6 space-y-3">
-      {steps.map((step) => (
-        <div
-          key={step.label}
-          className="flex items-center justify-between rounded-md border border-border bg-background px-3 py-2"
-        >
-          <span className="text-sm">{step.label}</span>
-          {step.complete ? (
-            <CheckCircle2 className="size-4 text-emerald-600" />
-          ) : isLoading ? (
-            <LoaderCircle className="size-4 animate-spin text-muted-foreground" />
-          ) : (
-            <span className="size-4 rounded-full border border-border" />
-          )}
-        </div>
-      ))}
-    </div>
+    <>
+      <div className="mt-4 grid gap-2">
+        {portfolio ? (
+          <Link to="/preview" variant="outline" className="w-full">
+            <ExternalLink className="size-4" />
+            Open full preview
+          </Link>
+        ) : null}
+        <ExportPortfolioButton portfolio={portfolio} className="w-full" />
+      </div>
+    </>
   )
+}
+
+function getGenerationMessage(
+  object: DeepPartial<GeneratedPortfolio> | undefined,
+  isLoading: boolean,
+): string {
+  if (!isLoading) {
+    return object
+      ? 'Portfolio preview is ready.'
+      : 'Submit a GitHub username to generate a portfolio preview.'
+  }
+
+  if (!object?.profile?.name) {
+    return 'Reading the GitHub profile and planning the portfolio...'
+  }
+
+  if (!object.home?.intro) {
+    return 'Writing the home page...'
+  }
+
+  if (!object.about?.paragraphs?.length) {
+    return 'Building the about page...'
+  }
+
+  if (!object.projects?.length) {
+    return 'Selecting projects and writing the projects page...'
+  }
+
+  if (!object.careers) {
+    return 'Building the career timeline...'
+  }
+
+  const notes = object.notes
+
+  if (!notes || !notes.projectSelection || !notes.careerInference) {
+    return 'Checking project and career details...'
+  }
+
+  return 'Finalizing the portfolio preview...'
 }
