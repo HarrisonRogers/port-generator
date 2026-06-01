@@ -1,5 +1,4 @@
 import type { GeneratedPortfolio } from '#/lib/portfolioSchema'
-import { Link } from '@tanstack/react-router'
 
 type FooterLink = {
   label: 'GitHub' | 'X' | 'LinkedIn'
@@ -75,16 +74,16 @@ export function Footer({ data }: { data: GeneratedPortfolio }) {
       </p>
       <div className="mt-8 flex items-center gap-4">
         {footerLinks.map((link) => (
-          <Link
+          <a
             key={`${link.label}-${link.url}`}
-            to={link.url}
+            href={link.url}
             target="_blank"
             rel="noreferrer"
             aria-label={link.label}
             className="text-sm text-neutral-600 underline underline-offset-2 transition-colors hover:text-black hover:no-underline dark:text-neutral-300 dark:hover:text-white"
           >
             {link.label}
-          </Link>
+          </a>
         ))}
       </div>
     </footer>

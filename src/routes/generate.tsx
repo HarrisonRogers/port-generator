@@ -12,6 +12,7 @@ import {
 import * as React from 'react'
 
 import { Button } from '#/components/animate-ui/components/buttons/button'
+import { ExportPortfolioButton } from '#/components/exportPortfolioButton'
 import { PreviewContent } from '#/components/preview/content'
 import { Input } from '#/components/ui/input'
 import { Label } from '#/components/ui/label'
@@ -155,12 +156,18 @@ function GeneratePortfolio() {
               </p>
             </div>
 
-            {previewPortfolio ? (
-              <Link to="/preview" variant="outline" className="shrink-0">
-                <ExternalLink className="size-4" />
-                Open full preview
-              </Link>
-            ) : null}
+            <div className="flex flex-wrap gap-2">
+              {previewPortfolio ? (
+                <Link to="/preview" variant="outline" className="shrink-0">
+                  <ExternalLink className="size-4" />
+                  Open full preview
+                </Link>
+              ) : null}
+              <ExportPortfolioButton
+                portfolio={previewPortfolio}
+                className="shrink-0"
+              />
+            </div>
           </div>
 
           <div className="rounded-lg border border-border bg-card p-3 shadow-sm">

@@ -1,16 +1,16 @@
-import type { GeneratedPortfolio, Project } from '#/lib/portfolioSchema'
+import type { Project } from '@/data/portfolio'
+import { portfolio } from '@/data/portfolio'
+import { isAbsoluteUrl } from '@/lib/portfolioUtils'
 
-export function ProjectsContent({ data }: { data: GeneratedPortfolio }) {
+export default function Projects() {
   return (
     <div>
-      <div className="flex items-center gap-2">
-        <h1 className="mb-7 font-serif text-5xl font-normal tracking-wide">
-          Projects
-        </h1>
-      </div>
-      <ProjectList projectList={data.projects} title="Personal" />
+      <h1 className="mb-7 font-serif text-5xl font-normal tracking-wide">
+        Projects
+      </h1>
+      <ProjectList projectList={portfolio.projects} title="Personal" />
       <p className="text-sm leading-6 text-neutral-500 dark:text-neutral-400">
-        {data.notes.projectSelection}
+        {portfolio.notes.projectSelection}
       </p>
     </div>
   )
@@ -75,14 +75,4 @@ function ProjectList({ projectList, title }: ProjectListProps) {
       </div>
     </section>
   )
-}
-
-function isAbsoluteUrl(value: string) {
-  try {
-    const url = new URL(value)
-
-    return url.protocol === 'http:' || url.protocol === 'https:'
-  } catch {
-    return false
-  }
 }

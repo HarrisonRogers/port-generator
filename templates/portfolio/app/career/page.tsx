@@ -1,8 +1,13 @@
-import type { Career, GeneratedPortfolio } from '#/lib/portfolioSchema'
-import { formatCareerDate, sortCareers } from './careerUtils'
+import type { Career } from '@/data/portfolio'
+import { portfolio } from '@/data/portfolio'
+import {
+  formatCareerDate,
+  isAbsoluteUrl,
+  sortCareers,
+} from '@/lib/portfolioUtils'
 
-export function CareerContent({ data }: { data: GeneratedPortfolio }) {
-  const sortedCareers = [...data.careers].sort(sortCareers)
+export default function Career() {
+  const sortedCareers = [...portfolio.careers].sort(sortCareers)
 
   return (
     <div>
@@ -26,15 +31,15 @@ export function CareerContent({ data }: { data: GeneratedPortfolio }) {
         </p>
       )}
       <p className="text-sm leading-6 text-neutral-500 dark:text-neutral-400">
-        {data.notes.careerInference} Review and edit these career entries before
-        publishing the downloaded source.
+        {portfolio.notes.careerInference} Review and edit these career entries
+        before publishing the downloaded source.
       </p>
     </div>
   )
 }
 
 function CareerTimelineItem({ career }: { career: Career }) {
-  const company = career.url ? (
+  const company = isAbsoluteUrl(career.url) ? (
     <a
       href={career.url}
       target="_blank"
