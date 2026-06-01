@@ -2,17 +2,24 @@ import * as React from 'react'
 
 import { defaultPortfolioData } from '#/components/preview/data'
 import type { GeneratedPortfolio } from '#/lib/portfolioSchema'
-import { generatedPortfolioSchema } from '#/lib/portfolioSchema'
+import { parseGeneratedPortfolio } from '#/lib/portfolioSchema'
 
 const STORAGE_KEY = 'port-generator:generated-portfolio'
 const STORAGE_EVENT = 'port-generator:generated-portfolio-updated'
 
 export function useGeneratedPortfolio() {
-  const [portfolio, setPortfolio] =
-    React.useState<GeneratedPortfolio>(defaultPortfolioData)
+  const storedPortfolio = useStoredGeneratedPortfolio()
+
+  return storedPortfolio ?? defaultPortfolioData
+}
+
+export function useStoredGeneratedPortfolio() {
+  const [portfolio, setPortfolio] = React.useState<GeneratedPortfolio | null>(
+    readStoredGeneratedPortfolio,
+  )
 
   React.useEffect(() => {
-    setPortfolio(readGeneratedPortfolio())
+    setPortfolio(readStoredGeneratedPortfolio())
 
     function handleGeneratedPortfolioUpdated(event: Event) {
       const customEvent = event as CustomEvent<GeneratedPortfolio>
@@ -21,7 +28,7 @@ export function useGeneratedPortfolio() {
 
     function handleStorage(event: StorageEvent) {
       if (event.key === STORAGE_KEY) {
-        setPortfolio(readGeneratedPortfolio())
+        setPortfolio(readStoredGeneratedPortfolio())
       }
     }
 
@@ -42,17 +49,18 @@ export function storeGeneratedPortfolio(portfolio: GeneratedPortfolio) {
   window.dispatchEvent(new CustomEvent(STORAGE_EVENT, { detail: portfolio }))
 }
 
-function readGeneratedPortfolio() {
+function readStoredGeneratedPortfolio() {
+  if (typeof window === 'undefined') return null
+
   const rawValue = window.localStorage.getItem(STORAGE_KEY)
 
-  if (!rawValue) return defaultPortfolioData
+  if (!rawValue) return null
 
   try {
     const parsedValue: unknown = JSON.parse(rawValue)
-    const result = generatedPortfolioSchema.safeParse(parsedValue)
 
-    return result.success ? result.data : defaultPortfolioData
+    return parseGeneratedPortfolio(parsedValue)
   } catch {
-    return defaultPortfolioData
+    return null
   }
 }

@@ -1,8 +1,10 @@
 import { experimental_useObject as useObject } from '@ai-sdk/react'
 import { createFileRoute } from '@tanstack/react-router'
+import type { DeepPartial } from 'ai'
 import {
   AlertCircle,
   CheckCircle2,
+  ExternalLink,
   Github,
   LoaderCircle,
   Sparkles,
@@ -13,9 +15,17 @@ import { Button } from '#/components/animate-ui/components/buttons/button'
 import { PreviewContent } from '#/components/preview/content'
 import { Input } from '#/components/ui/input'
 import { Label } from '#/components/ui/label'
+import { Link } from '#/components/ui/link'
 import { Textarea } from '#/components/ui/textarea'
-import { storeGeneratedPortfolio } from '#/hooks/useGeneratedPortfolio'
-import { generatedPortfolioSchema } from '#/lib/portfolioSchema'
+import {
+  storeGeneratedPortfolio,
+  useStoredGeneratedPortfolio,
+} from '#/hooks/useGeneratedPortfolio'
+import type { GeneratedPortfolio } from '#/lib/portfolioSchema'
+import {
+  generatedPortfolioSchema,
+  parseGeneratedPortfolio,
+} from '#/lib/portfolioSchema'
 
 export const Route = createFileRoute('/generate')({
   validateSearch: (search) => ({
@@ -32,14 +42,13 @@ function GeneratePortfolio() {
   const [github, setGithub] = React.useState(search.github)
   const [about, setAbout] = React.useState(search.about)
   const hasSubmittedSearch = React.useRef(false)
+  const storedPortfolio = useStoredGeneratedPortfolio()
   const { object, submit, isLoading, error } = useObject({
     api: '/api/generate-portfolio',
     schema: generatedPortfolioSchema,
   })
   const generatedPortfolio = React.useMemo(() => {
-    const result = generatedPortfolioSchema.safeParse(object)
-
-    return result.success ? result.data : null
+    return parseGeneratedPortfolio(object)
   }, [object])
 
   React.useEffect(() => {
@@ -62,6 +71,8 @@ function GeneratePortfolio() {
 
     storeGeneratedPortfolio(generatedPortfolio)
   }, [generatedPortfolio, isLoading])
+
+  const previewPortfolio = generatedPortfolio ?? storedPortfolio
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -134,11 +145,29 @@ function GeneratePortfolio() {
         </section>
 
         <section className="space-y-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-xl font-semibold tracking-normal">
+                Portfolio preview
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Review the latest generated site before sharing it.
+              </p>
+            </div>
+
+            {previewPortfolio ? (
+              <Link to="/preview" variant="outline" className="shrink-0">
+                <ExternalLink className="size-4" />
+                Open full preview
+              </Link>
+            ) : null}
+          </div>
+
           <div className="rounded-lg border border-border bg-card p-3 shadow-sm">
             <div className="min-h-136 overflow-y-auto overflow-x-hidden rounded-md border border-border bg-background">
-              {generatedPortfolio ? (
+              {previewPortfolio ? (
                 <div className="min-h-full origin-top scale-90">
-                  <PreviewContent variant="card" data={generatedPortfolio} />
+                  <PreviewContent variant="card" data={previewPortfolio} />
                 </div>
               ) : (
                 <div className="flex min-h-136 items-center justify-center p-8 text-center text-muted-foreground">
@@ -156,19 +185,8 @@ function GeneratePortfolio() {
 }
 
 type GenerationStepsProps = {
-  object: PartialGeneratedPortfolio | undefined
+  object: DeepPartial<GeneratedPortfolio> | undefined
   isLoading: boolean
-}
-
-type PartialGeneratedPortfolio = {
-  home?: {
-    intro?: string
-  }
-  about?: {
-    paragraphs?: Array<string | undefined>
-  }
-  projects?: Array<unknown>
-  careers?: Array<unknown>
 }
 
 function GenerationSteps({ object, isLoading }: GenerationStepsProps) {

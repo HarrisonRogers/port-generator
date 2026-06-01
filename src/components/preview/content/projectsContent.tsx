@@ -9,7 +9,7 @@ export function ProjectsContent({ data }: { data: GeneratedPortfolio }) {
           Projects
         </h1>
       </div>
-      <ProjectList projectList={data.projects} title="Featured" />
+      <ProjectList projectList={data.projects} title="Personal" />
       <p className="text-sm leading-6 text-neutral-500 dark:text-neutral-400">
         {data.notes.projectSelection}
       </p>
@@ -33,9 +33,9 @@ function ProjectList({ projectList, title }: ProjectListProps) {
       <div>
         {projectList.map((project) => (
           <article key={project.title} className="mb-5 flex flex-col space-y-1">
-            <div className="flex w-full flex-col items-start justify-between space-y-1 sm:flex-row sm:items-center sm:space-x-2 sm:space-y-0">
-              <div className="flex items-center space-x-2">
-                {project.url ? (
+            <div className="flex w-full flex-col items-start justify-between gap-2 sm:flex-row sm:items-start">
+              <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 sm:w-36 sm:shrink-0">
+                {isAbsoluteUrl(project.url) ? (
                   <Link
                     to={project.url}
                     target="_blank"
@@ -52,7 +52,7 @@ function ProjectList({ projectList, title }: ProjectListProps) {
                   </h3>
                 )}
 
-                {project.sourceCode ? (
+                {isAbsoluteUrl(project.sourceCode) ? (
                   <Link
                     to={project.sourceCode}
                     target="_blank"
@@ -67,20 +67,23 @@ function ProjectList({ projectList, title }: ProjectListProps) {
                   </Link>
                 ) : null}
               </div>
-              <p className="text-neutral-600 tracking-tight dark:text-neutral-400">
+              <p className="max-w-[44ch] leading-7 tracking-tight text-neutral-600 dark:text-neutral-400">
                 {project.description}
               </p>
-              {project.languages.length > 0 || Boolean(project.stars) ? (
-                <p className="text-sm text-neutral-500 dark:text-neutral-500">
-                  {project.languages.join(', ')}
-                  {project.languages.length > 0 && project.stars ? ' - ' : ''}
-                  {project.stars ? `${project.stars} stars` : ''}
-                </p>
-              ) : null}
             </div>
           </article>
         ))}
       </div>
     </section>
   )
+}
+
+function isAbsoluteUrl(value: string) {
+  try {
+    const url = new URL(value)
+
+    return url.protocol === 'http:' || url.protocol === 'https:'
+  } catch {
+    return false
+  }
 }

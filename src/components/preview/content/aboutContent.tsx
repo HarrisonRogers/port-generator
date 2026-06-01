@@ -25,7 +25,6 @@ export function AboutContent({ data }: { data: GeneratedPortfolio }) {
           technologies={data.techStack.frontend}
         />
         <TechStackCard title="Backend" technologies={data.techStack.backend} />
-        <TechStackCard title="Tools" technologies={data.techStack.tools} />
       </div>
     </div>
   )
