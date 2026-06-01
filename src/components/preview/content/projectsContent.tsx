@@ -1,10 +1,7 @@
-import type { Project } from '../data'
-import { projects } from '../data'
+import type { GeneratedPortfolio, Project } from '#/lib/portfolioSchema'
+import { Link } from '@tanstack/react-router'
 
-export function ProjectsContent() {
-  const personalProjects = projects.filter((project) => project.personal)
-  const workProjects = projects.filter((project) => !project.personal)
-
+export function ProjectsContent({ data }: { data: GeneratedPortfolio }) {
   return (
     <div>
       <div className="flex items-center gap-2">
@@ -12,8 +9,10 @@ export function ProjectsContent() {
           Projects
         </h1>
       </div>
-      <ProjectList projectList={workProjects} title="Work" />
-      <ProjectList projectList={personalProjects} title="Personal" />
+      <ProjectList projectList={data.projects} title="Personal" />
+      <p className="text-sm leading-6 text-neutral-500 dark:text-neutral-400">
+        {data.notes.projectSelection}
+      </p>
     </div>
   )
 }
@@ -34,11 +33,11 @@ function ProjectList({ projectList, title }: ProjectListProps) {
       <div>
         {projectList.map((project) => (
           <article key={project.title} className="mb-5 flex flex-col space-y-1">
-            <div className="flex w-full flex-col items-start justify-between space-y-1 sm:flex-row sm:items-center sm:space-x-2 sm:space-y-0">
-              <div className="flex items-center space-x-2">
-                {project.url ? (
-                  <a
-                    href={project.url}
+            <div className="flex w-full flex-col items-start justify-between gap-2 sm:flex-row sm:items-start">
+              <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 sm:w-36 sm:shrink-0">
+                {isAbsoluteUrl(project.url) ? (
+                  <Link
+                    to={project.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-black underline underline-offset-2 transition hover:no-underline dark:text-white"
@@ -46,16 +45,16 @@ function ProjectList({ projectList, title }: ProjectListProps) {
                     <h3 className="text-base font-normal tracking-normal">
                       {project.title}
                     </h3>
-                  </a>
+                  </Link>
                 ) : (
                   <h3 className="text-base font-normal tracking-normal text-black dark:text-white">
                     {project.title}
                   </h3>
                 )}
 
-                {project.sourceCode ? (
-                  <a
-                    href={project.sourceCode}
+                {isAbsoluteUrl(project.sourceCode) ? (
+                  <Link
+                    to={project.sourceCode}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-neutral-500 transition hover:opacity-70 dark:text-neutral-400"
@@ -65,10 +64,10 @@ function ProjectList({ projectList, title }: ProjectListProps) {
                       Source Code
                     </span>
                     )
-                  </a>
+                  </Link>
                 ) : null}
               </div>
-              <p className="text-neutral-600 tracking-tight dark:text-neutral-400">
+              <p className="max-w-[44ch] leading-7 tracking-tight text-neutral-600 dark:text-neutral-400">
                 {project.description}
               </p>
             </div>
@@ -77,4 +76,14 @@ function ProjectList({ projectList, title }: ProjectListProps) {
       </div>
     </section>
   )
+}
+
+function isAbsoluteUrl(value: string) {
+  try {
+    const url = new URL(value)
+
+    return url.protocol === 'http:' || url.protocol === 'https:'
+  } catch {
+    return false
+  }
 }

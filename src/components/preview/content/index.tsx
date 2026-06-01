@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 
 import type { PreviewTab } from '../types'
+import type { GeneratedPortfolio } from '#/lib/portfolioSchema'
 import { AboutContent } from './aboutContent'
 import { CareerContent } from './careerContent'
 import { HomeContent } from './homeContent'
@@ -8,18 +9,25 @@ import { ProjectsContent } from './projectsContent'
 import React from 'react'
 import { Navbar } from '../navbar'
 import { Footer } from './footer'
+import { useGeneratedPortfolio } from '#/hooks/useGeneratedPortfolio'
 
 type PreviewContentProps = {
   variant?: 'page' | 'card'
+  data?: GeneratedPortfolio
 }
 
-export function PreviewContent({ variant = 'page' }: PreviewContentProps) {
+export function PreviewContent({
+  variant = 'page',
+  data,
+}: PreviewContentProps) {
   const [activeTab, setActiveTab] = React.useState<PreviewTab>('home')
+  const storedPortfolio = useGeneratedPortfolio()
+  const portfolio = data ?? storedPortfolio
   const content = {
-    home: <HomeContent />,
-    about: <AboutContent />,
-    projects: <ProjectsContent />,
-    career: <CareerContent />,
+    home: <HomeContent data={portfolio} />,
+    about: <AboutContent data={portfolio} />,
+    projects: <ProjectsContent data={portfolio} />,
+    career: <CareerContent data={portfolio} />,
   } satisfies Record<PreviewTab, ReactNode>
   const isCard = variant === 'card'
 
@@ -42,7 +50,7 @@ export function PreviewContent({ variant = 'page' }: PreviewContentProps) {
       >
         <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
         <section>{content[activeTab]}</section>
-        <Footer />
+        <Footer data={portfolio} />
       </main>
     </div>
   )

@@ -1,30 +1,21 @@
-import { Button } from '#/components/animate-ui/components/buttons/button'
 import { Shine } from '#/components/animate-ui/primitives/effects/shine'
 import { Input } from '#/components/ui/input'
 import { Label } from '#/components/ui/label'
+import { Link } from '#/components/ui/link'
 import { Textarea } from '#/components/ui/textarea'
+import { Sparkles } from 'lucide-react'
 import * as React from 'react'
 
 export function CreatePortfolioSection() {
   const [github, setGithub] = React.useState('')
   const [about, setAbout] = React.useState('')
 
-  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
-    e.preventDefault()
-    console.log({ github, about })
-  }
-
   return (
-    <section className="z-10 mx-auto flex h-screen w-full max-w-lg flex-col items-center justify-center gap-6">
-      <h1 className="font-serif text-6xl font-normal tracking-wider">
-        Build Your Portfolio
-      </h1>
-      <p>Just enter your Github username</p>
+    <section className="z-10 mx-auto flex h-screen w-full max-w-3xl flex-col items-center justify-center gap-6">
+      <h1 className="text-6xl font-normal">Build Your Portfolio</h1>
+      <p className="text-muted-foreground">Just enter your Github username</p>
 
-      <form
-        onSubmit={handleSubmit}
-        className="w-full rounded-2xl border border-white/20 bg-white/10 p-6 shadow-2xl"
-      >
+      <form className="w-full rounded-2xl border border-white/20 bg-white/10 p-6 shadow-2xl">
         <div className="flex flex-col gap-5">
           <div className="flex flex-col gap-2">
             <Label htmlFor="github">GitHub username</Label>
@@ -50,9 +41,15 @@ export function CreatePortfolioSection() {
           </div>
 
           <Shine asChild loop duration={2000} loopDelay={1500}>
-            <Button type="submit" size="lg" className="w-full">
+            <Link
+              to="/generate"
+              search={{ github, about, generate: '1' }}
+              size="lg"
+              className="w-full"
+            >
+              <Sparkles className="size-4" />
               Generate Portfolio
-            </Button>
+            </Link>
           </Shine>
         </div>
       </form>
