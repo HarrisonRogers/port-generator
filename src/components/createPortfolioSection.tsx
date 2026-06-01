@@ -3,7 +3,10 @@ import { Button } from '#/components/animate-ui/components/buttons/button'
 import { Input } from '#/components/ui/input'
 import { Label } from '#/components/ui/label'
 import { Textarea } from '#/components/ui/textarea'
-import { storeGenerateAbout } from '#/lib/generateContextStorage'
+import {
+  storeGenerateAbout,
+  storeShouldGeneratePortfolio,
+} from '#/lib/generateContextStorage'
 import { useNavigate } from '@tanstack/react-router'
 import { Sparkles } from 'lucide-react'
 import * as React from 'react'
@@ -16,7 +19,8 @@ export function CreatePortfolioSection() {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     storeGenerateAbout(about)
-    navigate({ to: '/generate', search: { githubUrl, generate: '1' } })
+    storeShouldGeneratePortfolio()
+    navigate({ to: '/generate', search: { githubUrl } })
   }
 
   return (

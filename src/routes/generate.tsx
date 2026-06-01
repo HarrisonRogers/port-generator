@@ -15,7 +15,10 @@ import {
   storeGeneratedPortfolio,
   useStoredGeneratedPortfolio,
 } from '#/hooks/useGeneratedPortfolio'
-import { consumeStoredGenerateAbout } from '#/lib/generateContextStorage'
+import {
+  consumeShouldGeneratePortfolio,
+  consumeStoredGenerateAbout,
+} from '#/lib/generateContextStorage'
 import type { GeneratedPortfolio } from '#/lib/portfolioSchema'
 import {
   generatedPortfolioSchema,
@@ -30,14 +33,12 @@ export const Route = createFileRoute('/generate')({
         : typeof search.github === 'string'
           ? search.github
           : '',
-    generate: search.generate === '1' ? '1' : '',
   }),
   component: GeneratePortfolio,
 })
 
 function GeneratePortfolio() {
   const search = Route.useSearch()
-  const navigate = Route.useNavigate()
   const [githubUrl, setGithubUrl] = React.useState(search.githubUrl)
   const [about, setAbout] = React.useState('')
   const hasSubmittedSearch = React.useRef(false)
@@ -51,25 +52,18 @@ function GeneratePortfolio() {
   }, [object])
 
   React.useEffect(() => {
-    if (
-      search.generate !== '1' ||
-      !search.githubUrl ||
-      hasSubmittedSearch.current
-    )
-      return
+    const shouldGenerate = consumeShouldGeneratePortfolio()
+
+    if (!shouldGenerate || !search.githubUrl || hasSubmittedSearch.current) return
 
     hasSubmittedSearch.current = true
     const storedAbout = consumeStoredGenerateAbout()
     setAbout(storedAbout)
-    navigate({
-      replace: true,
-      search: { githubUrl: search.githubUrl, generate: '' },
-    })
     submit({
       githubUrl: search.githubUrl,
       about: storedAbout,
     })
-  }, [navigate, search.generate, search.githubUrl, submit])
+  }, [search.githubUrl, submit])
 
   React.useEffect(() => {
     if (!generatedPortfolio || isLoading) return

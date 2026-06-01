@@ -18,7 +18,7 @@ function PreviewPortfolio() {
       return
     }
 
-    navigate({ to: '/generate', search: { githubUrl: '', generate: '1' } })
+    navigate({ to: '/generate', search: { githubUrl: '' } })
   }
 
   return (
