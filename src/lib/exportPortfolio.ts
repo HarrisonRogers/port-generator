@@ -245,7 +245,7 @@ function createReadme(portfolio: GeneratedPortfolio) {
 
   return `# ${displayName} Portfolio
 
-This is a standalone Next.js portfolio exported from Port Generator. It is organized so the portfolio content is easy to find, review, and edit.
+This is a standalone Next.js portfolio exported from PortGen. It is organized so the portfolio content is easy to find, review, and edit.
 
 ## Set Up
 
