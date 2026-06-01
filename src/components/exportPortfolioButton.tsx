@@ -41,7 +41,7 @@ export function ExportPortfolioButton({
       ) : (
         <Download className="size-4" />
       )}
-      Export Next.js zip
+      Export portfolio zip
     </Button>
   )
 }

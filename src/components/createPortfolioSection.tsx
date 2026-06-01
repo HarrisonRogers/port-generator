@@ -23,10 +23,11 @@ export function CreatePortfolioSection() {
     <section className="z-10 mx-auto flex min-h-[calc(100svh-2rem)] w-full max-w-3xl flex-col items-center justify-center gap-5 px-4 py-12 sm:min-h-screen sm:gap-6 sm:px-6 sm:py-16">
       <div className="flex flex-col items-center gap-3 text-center">
         <h1 className="max-w-2xl text-balance text-4xl leading-tight font-normal sm:text-5xl md:text-6xl">
-          Build Your Portfolio
+          Launch Your Portfolio
         </h1>
         <p className="max-w-sm text-pretty text-muted-foreground sm:max-w-none">
-          Just enter your GitHub profile URL
+          Just enter your GitHub profile URL then download your portfolio and
+          follow the readme
         </p>
       </div>
 
