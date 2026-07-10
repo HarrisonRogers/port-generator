@@ -1,5 +1,5 @@
 import { CreatePortfolioSection } from '#/components/createPortfolioSection'
-import { Ferrofluid } from '#/components/Ferrofluid'
+import { Ferrofluid } from '#/components/ferrofluid'
 import { PortfolioPreview } from '#/components/portfolioPreview'
 import { useResolvedTheme } from '#/hooks/useResolvedTheme'
 import { cn } from '#/lib/utils'
