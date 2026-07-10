@@ -1,7 +1,7 @@
 import { experimental_useObject as useObject } from '@ai-sdk/react'
 import { createFileRoute } from '@tanstack/react-router'
 import type { DeepPartial } from 'ai'
-import { AlertCircle, ExternalLink, Sparkles } from 'lucide-react'
+import { AlertCircle, ExternalLink, House, Sparkles } from 'lucide-react'
 import * as React from 'react'
 
 import { Button } from '#/components/animate-ui/components/buttons/button'
@@ -54,7 +54,8 @@ function GeneratePortfolio() {
   React.useEffect(() => {
     const shouldGenerate = consumeShouldGeneratePortfolio()
 
-    if (!shouldGenerate || !search.githubUrl || hasSubmittedSearch.current) return
+    if (!shouldGenerate || !search.githubUrl || hasSubmittedSearch.current)
+      return
 
     hasSubmittedSearch.current = true
     const storedAbout = consumeStoredGenerateAbout()
@@ -85,11 +86,24 @@ function GeneratePortfolio() {
     <main className="min-h-screen bg-background px-4 py-6 lg:px-6">
       <div className="mx-auto grid w-full max-w-[1500px] gap-5 xl:grid-cols-[340px_minmax(0,1fr)]">
         <aside className="rounded-lg border border-border bg-card p-5 shadow-sm xl:sticky xl:top-6 xl:h-fit">
-          <div>
-            <h2 className="text-lg font-semibold tracking-normal">Generate</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Add a GitHub profile and optional context.
-            </p>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-semibold tracking-normal">
+                Generate
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Add a GitHub profile and optional context.
+              </p>
+            </div>
+            <Link
+              to="/"
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Back to home"
+              title="Back to home"
+            >
+              <House className="size-4" />
+            </Link>
           </div>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-5">
@@ -155,6 +169,17 @@ function GeneratePortfolio() {
                   </p>
                 ) : null}
               </div>
+              {previewPortfolio ? (
+                <Link
+                  to="/preview"
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label="Open full preview"
+                  title="Open full preview"
+                >
+                  <ExternalLink className="size-4" />
+                </Link>
+              ) : null}
             </div>
 
             <div className="min-h-136 flex-1 overflow-y-auto overflow-x-hidden bg-background">

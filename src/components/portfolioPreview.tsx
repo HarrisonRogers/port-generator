@@ -4,10 +4,13 @@ import { Link } from '@tanstack/react-router'
 
 export function PortfolioPreview() {
   return (
-    <section className="z-10 mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 pt-7 pb-10">
+    <section
+      id="portfolio-preview"
+      className="z-10 mx-auto flex w-full max-w-6xl scroll-mt-6 flex-col gap-6 px-4 pt-7 pb-10"
+    >
       <div className="flex items-end justify-between gap-4">
         <div>
-          <h2 className="text-4xl font-normal sm:text-5xl">
+          <h2 className="font-serif text-4xl font-normal tracking-wide sm:text-5xl">
             Portfolio preview
           </h2>
           <p className="mt-3 max-w-lg text-muted-foreground">
@@ -20,7 +23,7 @@ export function PortfolioPreview() {
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-border bg-white p-3 shadow-2xl dark:bg-background z-20">
-        <div className="min-h-136 overflow-y-auto overflow-x-hidden rounded-xl border border-border dark:bg-background">
+        <div className="min-h-200 overflow-y-auto overflow-x-hidden rounded-xl border border-border dark:bg-background">
           <div className="min-h-full origin-top scale-90">
             <PreviewContent variant="card" data={defaultPortfolioData} />
           </div>
