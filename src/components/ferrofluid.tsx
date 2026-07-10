@@ -3,7 +3,7 @@ import { Mesh, Program, Renderer, Triangle } from 'ogl'
 import { useEffect, useRef } from 'react'
 import type { CSSProperties } from 'react'
 
-export interface FerrofluidProps {
+interface FerrofluidProps {
   className?: string
   dpr?: number
   paused?: boolean
